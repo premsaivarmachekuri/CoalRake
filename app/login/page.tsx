@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation.js';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { createUserWithEmailAndPassword } from 'firebase/auth/cordova';
 import { useMediaQuery } from 'react-responsive'; // Import useMediaQuery
-import Chat from '../components/Chat';
+import Chat from '../components/chat';
 
 const Login: React.FC = () => {
   const [position, setPosition] = useState(0);

@@ -1,8 +1,17 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import CustomNav from '../components/CustomNav'; // Replace './CustomNav' with the actual path to your 'customNav' component.
-import Chat from '../components/Chat';
+import EditButton from '../components/Edit';
+// import Map from '../components/Map';
+import Chat from '../components/chat';
+import dynamic from 'next/dynamic';
+
+// Dynamic import of LeafletMap component
+const Map = dynamic(() => import('../components/Map'), {
+  ssr: false, // Ensure it's not server-side rendered
+});
 // Define a type for your data
 interface CoalData {
   region: string;
@@ -19,43 +28,46 @@ const Dashboard = () => {
   const [districtFilter, setDistrictFilter] = useState('');
   const [ownerFilter, setOwnerFilter] = useState('');
   const [mineFilter, setMineFilter] = useState('');
+  const [selectedDistrictImage, setSelectedDistrictImage] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     // Mock data for demonstration purposes
     const mockData: CoalData[] = [
       {
-        region: 'Andhra Pradesh',
-        district: 'Visakhapatnam',
-        owner: 'CSI',
-        mineName: '10C',
+        region: 'Region 1',
+        district: 'District A',
+        owner: 'Owner X',
+        mineName: 'Mine 1',
         coalProduction: 100,
       },
       {
-        region: 'Andhra Pradesh',
-        district: 'Vizianagaram',
-        owner: 'CSB',
-        mineName: '10B',
+        region: 'Region 1',
+        district: 'District B',
+        owner: 'Owner Y',
+        mineName: 'Mine 2',
+        coalProduction: 200,
+      },
+      {
+        region: 'Region 1',
+        district: 'District C',
+        owner: 'Owner Z',
+        mineName: 'Mine 3',
         coalProduction: 120,
       },
       {
-        region: 'Andhra Pradesh',
-        district: 'Visakhapatnam',
-        owner: 'CSI',
-        mineName: '10C',
-        coalProduction: 130,
-      },
-      {
-        region: 'Andhra Pradesh',
-        district: 'Srikakulam',
-        owner: 'CSI',
-        mineName: '10R',
-        coalProduction: 140,
+        region: 'Region3',
+        district: 'District D',
+        owner: 'Owner Z',
+        mineName: 'Mine 3',
+        coalProduction: 150,
       },
       {
         region: 'Assam',
         district: 'Dispur',
-        owner: 'RK45',
-        mineName: 'CS34',
+        owner: 'Billionaire Premsai ',
+        mineName: 'PremSai Coaler',
         coalProduction: 150,
       },
       // Add more data entries as needed
@@ -105,10 +117,21 @@ const Dashboard = () => {
       (!mineFilter || item.mineName === mineFilter)
   );
 
+  const handleDistrictFilterChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedDistrict = e.target.value;
+    setDistrictFilter(selectedDistrict);
+
+    // Load the corresponding image based on the selected district
+    const imagePath = `/${selectedDistrict}.png`; // Adjust the path accordingly
+    setSelectedDistrictImage(imagePath);
+  };
+
   return (
-    <div style={{ fontFamily: 'Ambit, sans-serif' }}>
+    <div>
       <CustomNav />
-      <div className="min-h-screen  p-4">
+      <div className="min-h-screen p-4">
         <h1 className="text-2xl font-semibold mb-4">
           Coal Production Dashboard
         </h1>
@@ -118,7 +141,7 @@ const Dashboard = () => {
             <select
               value={regionFilter}
               onChange={(e) => setRegionFilter(e.target.value)}
-              className="w-full bg-blue-50 border border-gray-300 rounded p-2"
+              className="w-[200px] bg-blue-50 border border-gray-300 rounded p-2"
             >
               <option value="">Select Region</option>
               {Array.from(new Set(data.map((item) => item.region))).map(
@@ -148,6 +171,8 @@ const Dashboard = () => {
             </select>
           </div>
 
+          {/* Selected District Image */}
+
           <div>
             <select
               value={ownerFilter}
@@ -169,7 +194,7 @@ const Dashboard = () => {
         </div>
 
         {/* Table to display filtered data */}
-        <div className="overflow-x-auto">
+        {/* <div className="overflow-x-auto">
           {filteredData.length > 0 ? (
             <table className="w-full border border-rounded  text-center">
               <thead className="bg-blue-200">
@@ -203,13 +228,23 @@ const Dashboard = () => {
             </table>
           ) : (
             // Display a message when no matching rows are found
-            <div className="text-center my-4 text-2xl text-gray-500 mt-4">
+            <div className="text-center text-2xl text-gray-500 mt-4">
               No matching records found.
             </div>
           )}
+        </div> */}
+        <div className='container overflow-x-auto m-auto'>
+          <Map />
         </div>
+
+        
       </div>
+      
       <Chat />
+      <div className='mb-[200px] w-[800px]'>
+        <EditButton />
+        </div>
+      
       <Footer />
     </div>
   );

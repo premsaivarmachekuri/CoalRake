@@ -7,7 +7,7 @@ import TopIntro from './components/TopIntro';
 import AboutSection from './components/WhatDo';
 import Title from './components/Title';
 import Partner from './components/Partner';
-import Chat from './components/Chat';
+import Chat from './components/chat';
 import Features from "./components/Features";
 export default function Home() {
   return (

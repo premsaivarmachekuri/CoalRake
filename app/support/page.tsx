@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
-import Chat from '../components/Chat';
+import Chat from '../components/chat';
 const Support: React.FC = () => {
   const [issue, setIssue] = useState('');
   const [email, setEmail] = useState('');

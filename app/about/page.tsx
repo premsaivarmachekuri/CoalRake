@@ -4,7 +4,7 @@ import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import { createGlobalStyle } from 'styled-components';
 import Features from '../components/Features';
-import Chat from '../components/Chat';
+import Chat from '../components/chat';
 
 const GlobalStyle = createGlobalStyle`
   @font-face {
