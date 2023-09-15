@@ -18,20 +18,6 @@ const customIcon = L.divIcon({
   iconAnchor: [16, 32],
 });
 
-interface MineData {
-  State: string;
-  District: string;
-  MineName: string;
-  MineProd: string;
-  MineOwner: string;
-  "Coal Mine Owner Full Name": string;
-  "Govt Owned/Private": string;
-  "Type of Mine (OC/UG/Mixed)": string;
-  Latitude: string;
-  Longitude: string;
-  Source: string;
-}
-
 interface SidingData {
   Siding: string;
   Status: string;
@@ -78,7 +64,6 @@ const Map: React.FC = () => {
 
     fetchData();
   }, []);
-  console.log("Hello World")
 
   return (
     <>
@@ -90,12 +75,6 @@ const Map: React.FC = () => {
           crossOrigin=""
         />
         <link href="https://cdn.tailwindcss.com" rel="stylesheet"></link>
-        <style>
-          {`
-            * {
-            }
-          `}
-        </style>
       </Helmet>
 
       <MapContainer center={[17.6868, 83.2185]} zoom={7} scrollWheelZoom={false} style={{ height: '500px', width: '100%' }}>
@@ -120,6 +99,9 @@ const Map: React.FC = () => {
                 <strong>Latitude:</strong> {mine.Latitude}
               </div>
               <div>
+                <strong>Longitude:</strong> {mine.Longitude}
+              </div>
+              <div>
                 <strong>Company Name:</strong> {mine["Company Name"]}
               </div>
               <div>
@@ -130,9 +112,6 @@ const Map: React.FC = () => {
               </div>
               <div>
                 <strong>End_Time:</strong> {mine.End_Time}
-              </div>
-              <div>
-                <EditButton />
               </div>
             </Popup>
           </Marker>

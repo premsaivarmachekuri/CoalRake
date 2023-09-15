@@ -2,130 +2,112 @@
 import React, { useState, useEffect } from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
-import CustomNav from '../components/CustomNav'; // Replace './CustomNav' with the actual path to your 'customNav' component.
+import CustomNav from '../components/CustomNav';
 import EditButton from '../components/Edit';
-// import Map from '../components/Map';
-import Chat from '../components/chat';
 import dynamic from 'next/dynamic';
+import Chat from '../components/chat';
 
-// Dynamic import of LeafletMap component
 const Map = dynamic(() => import('../components/Map'), {
-  ssr: false, // Ensure it's not server-side rendered
+  ssr: false,
 });
-// Define a type for your data
-interface CoalData {
-  region: string;
-  district: string;
-  owner: string;
-  mineName: string;
-  coalProduction: number;
+
+interface SidingData {
+  Siding: string;
+  Status: number;
+  Latitude: string;
+  Longitude: string;
+  "Company Name": string;
+  Train: string;
+  Start_Time: string;
+  End_Time: string;
 }
 
 const Dashboard = () => {
-  // Define state variables for your data and filters
-  const [data, setData] = useState<CoalData[]>([]);
-  const [regionFilter, setRegionFilter] = useState('');
-  const [districtFilter, setDistrictFilter] = useState('');
-  const [ownerFilter, setOwnerFilter] = useState('');
-  const [mineFilter, setMineFilter] = useState('');
-  const [selectedDistrictImage, setSelectedDistrictImage] = useState<
-    string | null
-  >(null);
+  const [data, setData] = useState<SidingData[]>([]);
+  const [sidingFilter, setSidingFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
 
   useEffect(() => {
-    // Mock data for demonstration purposes
-    const mockData: CoalData[] = [
+    const mockData: SidingData[] = [
       {
-        region: 'Region 1',
-        district: 'District A',
-        owner: 'Owner X',
-        mineName: 'Mine 1',
-        coalProduction: 100,
+        Siding: "BAUDPUR",
+        Status: 5000,
+        Latitude: "21.0630° N",
+        Longitude: "86.4627° E",
+        "Company Name": "RINL",
+        Train: "102350",
+        Start_Time: "8:00",
+        End_Time: "18:30",
       },
       {
-        region: 'Region 1',
-        district: 'District B',
-        owner: 'Owner Y',
-        mineName: 'Mine 2',
-        coalProduction: 200,
+        Siding: "BAGHUAPAL",
+        Status: 3000,
+        Latitude: "21.0442° N",
+        Longitude: "86.0147° E",
+        "Company Name": "NTPC",
+        Train: "",
+        Start_Time: "",
+        End_Time: "",
       },
       {
-        region: 'Region 1',
-        district: 'District C',
-        owner: 'Owner Z',
-        mineName: 'Mine 3',
-        coalProduction: 120,
+        Siding: "CHATRAPUR",
+        Status: 4000,
+        Latitude: "19.3597° N",
+        Longitude: "84.9887° E",
+        "Company Name": "APEPDCL",
+        Train: "395729",
+        Start_Time: "48",
+        End_Time: "14:00",
       },
       {
-        region: 'Region3',
-        district: 'District D',
-        owner: 'Owner Z',
-        mineName: 'Mine 3',
-        coalProduction: 150,
+        Siding: "CHILIKIDARA",
+        Status: 3000,
+        Latitude: "21.2427° N",
+        Longitude: "85.8269° E",
+        "Company Name": "RSP",
+        Train: "",
+        Start_Time: "6:00",
+        End_Time: "20:00",
       },
-      {
-        region: 'Assam',
-        district: 'Dispur',
-        owner: 'Billionaire Premsai ',
-        mineName: 'PremSai Coaler',
-        coalProduction: 150,
-      },
-      // Add more data entries as needed
     ];
 
     setData(mockData);
 
-    // Extract and set unique values for the dropdowns
-    const uniqueRegions = Array.from(
-      new Set(mockData.map((item) => item.region))
-    );
-    setUniqueOptions(uniqueRegions, setRegionFilter);
+    const uniqueSidings = Array.from(new Set(mockData.map((item) => item.Siding)));
+    setUniqueOptions(uniqueSidings, setSidingFilter);
 
-    const uniqueDistricts = Array.from(
-      new Set(mockData.map((item) => item.district))
-    );
-    setUniqueOptions(uniqueDistricts, setDistrictFilter);
-
-    const uniqueOwners = Array.from(
-      new Set(mockData.map((item) => item.owner))
-    );
-    setUniqueOptions(uniqueOwners, setOwnerFilter);
-
-    const uniqueMines = Array.from(
-      new Set(mockData.map((item) => item.mineName))
-    );
-    setUniqueOptions(uniqueMines, setMineFilter);
+    const uniqueStatuses = Array.from(new Set(mockData.map((item) => item.Status)));
+    setUniqueOptions(uniqueStatuses, setStatusFilter);
   }, []);
 
-  // Function to set unique options in a dropdown
   const setUniqueOptions = (
-    options: string[],
+    options: (string | number)[],
     setter: (value: string) => void
   ) => {
-    setter(''); // Reset the filter
-    options.sort(); // Sort the options alphabetically
-    options.unshift(''); // Add an empty option
-    setter(options[0]); // Set the dropdown value to the first option
+    setter('');
+    options.sort();
+    options.unshift('');
+    setter(options[0]);
   };
 
-  // Define a function to filter data based on dropdown selections
   const filteredData = data.filter(
     (item) =>
-      (!regionFilter || item.region === regionFilter) &&
-      (!districtFilter || item.district === districtFilter) &&
-      (!ownerFilter || item.owner === ownerFilter) &&
-      (!mineFilter || item.mineName === mineFilter)
+      (!sidingFilter || item.Siding === sidingFilter) &&
+      (!statusFilter || item.Status === Number(statusFilter))
   );
 
-  const handleDistrictFilterChange = (
+  const handleSidingFilterChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    const selectedDistrict = e.target.value;
-    setDistrictFilter(selectedDistrict);
+    const selectedSiding = e.target.value;
+    setSidingFilter(selectedSiding);
+  };
 
-    // Load the corresponding image based on the selected district
-    const imagePath = `/${selectedDistrict}.png`; // Adjust the path accordingly
-    setSelectedDistrictImage(imagePath);
+  const handleStatusFilterChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedStatus = e.target.value;
+    setStatusFilter(selectedStatus);
   };
 
   return (
@@ -135,19 +117,18 @@ const Dashboard = () => {
         <h1 className="text-2xl font-semibold mb-4">
           Coal Production Dashboard
         </h1>
-        {/* Dropdown Filters */}
         <div className="flex flex-col space-y-4 mb-4">
           <div>
             <select
-              value={regionFilter}
-              onChange={(e) => setRegionFilter(e.target.value)}
+              value={sidingFilter}
+              onChange={handleSidingFilterChange}
               className="w-[200px] bg-blue-50 border border-gray-300 rounded p-2"
             >
-              <option value="">Select Region</option>
-              {Array.from(new Set(data.map((item) => item.region))).map(
-                (region, index) => (
-                  <option key={index} value={region}>
-                    {region}
+              <option value="">Select Siding</option>
+              {Array.from(new Set(data.map((item) => item.Siding))).map(
+                (siding, index) => (
+                  <option key={index} value={siding}>
+                    {siding}
                   </option>
                 )
               )}
@@ -156,95 +137,82 @@ const Dashboard = () => {
 
           <div>
             <select
-              value={districtFilter}
-              onChange={(e) => setDistrictFilter(e.target.value)}
+              value={statusFilter}
+              onChange={handleStatusFilterChange}
               className="w-full bg-blue-50 border border-gray-300 rounded p-2"
             >
-              <option value="">Select District</option>
-              {Array.from(new Set(data.map((item) => item.district))).map(
-                (district, index) => (
-                  <option key={index} value={district}>
-                    {district}
+              <option value="">Select Status</option>
+              {Array.from(new Set(data.map((item) => item.Status))).map(
+                (status, index) => (
+                  <option key={index} value={status}>
+                    {status}
                   </option>
                 )
               )}
             </select>
           </div>
-
-          {/* Selected District Image */}
-
-          <div>
-            <select
-              value={ownerFilter}
-              onChange={(e) => setOwnerFilter(e.target.value)}
-              className="w-full bg-blue-50 border border-gray-300 rounded p-2"
-            >
-              <option value="">Select Owner</option>
-              {Array.from(new Set(data.map((item) => item.owner))).map(
-                (owner, index) => (
-                  <option key={index} value={owner}>
-                    {owner}
-                  </option>
-                )
-              )}
-            </select>
-          </div>
-
-          {/* Add similar dropdowns for owner and mine */}
         </div>
 
-        {/* Table to display filtered data */}
-        {/* <div className="overflow-x-auto">
+        <div className="overflow-x-auto">
           {filteredData.length > 0 ? (
             <table className="w-full border border-rounded  text-center">
               <thead className="bg-blue-200">
                 <tr>
-                  <th className="p-2">Region</th>
-                  <th className="p-2">District</th>
-                  <th className="p-2">Owner</th>
-                  <th className="p-2">Mine Name</th>
-                  <th className="p-2">Coal Production (Metric Tonnes)</th>
+                  <th className="p-2">Siding</th>
+                  <th className="p-2">Status</th>
+                  <th className="p-2">Latitude</th>
+                  <th className="p-2">Longitude</th>
+                  <th className="p-2">Company Name</th>
+                  <th className="p-2">Train</th>
+                  <th className="p-2">Start Time</th>
+                  <th className="p-2">End Time</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredData.map((item, index) => (
                   <tr key={index} className="hover:bg-gray-200 ">
                     <td className="p-2 border border-gray-200">
-                      {item.region}
+                      {item.Siding}
                     </td>
                     <td className="p-2 border border-gray-200">
-                      {item.district}
-                    </td>
-                    <td className="p-2 border border-gray-200">{item.owner}</td>
-                    <td className="p-2 border border-gray-200">
-                      {item.mineName}
+                      {item.Status}
                     </td>
                     <td className="p-2 border border-gray-200">
-                      {item.coalProduction}
+                      {item.Latitude}
+                    </td>
+                    <td className="p-2 border border-gray-200">
+                      {item.Longitude}
+                    </td>
+                    <td className="p-2 border border-gray-200">
+                      {item["Company Name"]}
+                    </td>
+                    <td className="p-2 border border-gray-200">
+                      {item.Train}
+                    </td>
+                    <td className="p-2 border border-gray-200">
+                      {item.Start_Time}
+                    </td>
+                    <td className="p-2 border border-gray-200">
+                      {item.End_Time}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           ) : (
-            // Display a message when no matching rows are found
             <div className="text-center text-2xl text-gray-500 mt-4">
               No matching records found.
             </div>
           )}
-        </div> */}
-        <div className='container overflow-x-auto m-auto'>
+        </div>
+        <div className='container overflow-x-auto m-auto mt-[20px]'>
           <Map />
         </div>
-
-        
       </div>
-      
       <Chat />
       <div className='mb-[200px] w-[800px]'>
         <EditButton />
-        </div>
-      
+      </div>
       <Footer />
     </div>
   );
